@@ -14,6 +14,18 @@ window.onload = function() {
   return base.src = 'base.png';
 };
 
+this.mousedown = function(e) {
+  var dx, dy, px, py, x, y;
+  this.canvas = document.getElementById('bridges-canvas');
+  dx = this.canvas.offsetLeft;
+  dy = this.canvas.offsetTop;
+  px = e.pageX;
+  py = e.pageY;
+  x = px - dx;
+  y = py - dy;
+  return alert("click at " + x + ", " + y);
+};
+
 BridgesApp = (function() {
   function BridgesApp(base) {
     console.log('BridgesApp constructor called');

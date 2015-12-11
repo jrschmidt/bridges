@@ -10,6 +10,17 @@ window.onload = ->
   base.src = 'base.png'
 
 
+@mousedown = (e) ->
+  @canvas = document.getElementById('bridges-canvas')
+  dx = @canvas.offsetLeft
+  dy = @canvas.offsetTop
+  px = e.pageX
+  py = e.pageY
+  x = px-dx
+  y = py-dy
+  alert "click at #{x}, #{y}"
+
+
 
 class BridgesApp
 
