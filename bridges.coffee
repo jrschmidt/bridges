@@ -30,6 +30,23 @@ class BridgesApp
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
 
+    @points = new PointsList
+
+
+
+class PointsList
+
+  constructor: ->
+    @list = []
+    for b in [1..15]
+      if b % 2 == 1
+        for a in [1..15] by 2
+          @list.push( [a,b] )
+      else
+        for a in [2..14] by 2
+          @list.push( [a,b] )
+
+
 
 
 class LocationFinder
