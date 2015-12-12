@@ -49,6 +49,57 @@ class PointsList
 
 
 
+class ConnectionHelper
+
+  constructor: ->
+    @vt = [
+      [0,-2]
+      [-1,-1]
+      [1,-1]
+      [-1,1]
+      [1,1]
+      [0,2]
+    ]
+
+    @hz = [
+      [-1,-1]
+      [1,-1]
+      [-2,0]
+      [2,0]
+      [-1,1]
+      [1,1]
+    ]
+
+
+  findConnectors: (color, a, b) ->
+    cnxx = []
+    dir = @findVH(color, a, b)
+    if dir == 'vert'
+      deltas = @vt
+    else
+      deltas = @hz
+    for d in deltas
+      aa = a + d[0]
+      bb = b + d[1]
+      cnxx.push([aa,bb]) if aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15
+    return cnxx
+
+
+  findVH: (color, a, b) ->
+    if color == 'green'
+      if a % 2 == 1
+        return 'vert'
+      else
+        return 'horz'
+
+    else
+      if a % 2 == 1
+        return 'horz'
+      else
+        return 'vert'
+
+
+
 class LocationFinder
   # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
 
