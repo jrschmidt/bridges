@@ -36,16 +36,45 @@ class BridgesApp
 
 class PointsList
 
+# Here we keep a list of empty gameboard points in two parallel arrays, @list[]
+# and @flatlist.
+
+# @list is a plain list of the game points, with each point written as an
+# array with the coordinates like this: [7,13].
+
+# @flatlist is a list of the same points, but each point is written as a
+# single integer, where [a, b] is converted to a*100 + b. So if
+# @list[i] = [7, 13], then @flatlist[i] = 713, and if
+# @list[i] = [15, 3], then @flatlist[i] = 1503.
+
+# This is done to make it easier to use array functions such as indexOf(),
+# which only works for 'scalar' values.
+
+# [ [7,13], [15,3], [6,10] ].indexOf([6,10])
+# will return -1 (even though [6,10] is in the array), but
+
+# [713, 1503, 610].indexOf(610)
+# will return 2.
+
   constructor: ->
     @list = []
+    @flatlist = []
     for b in [1..15]
       if b % 2 == 1
         for a in [1..15] by 2
-          @list.push( [a,b] )
+          @list.push( [a, b] )
+          @flatlist.push(a*100 + b)
       else
         for a in [2..14] by 2
-          @list.push( [a,b] )
+          @list.push( [a, b] )
+          @flatlist.push(a*100 + b)
 
+
+  remove: (point) ->
+    i = @flatlist.indexOf(100*point[0] + point[1])
+    if i >= 0
+      @list = @list[0 .. (i-1)].concat(@list[(i+1) ..])
+      @flatlist = @flatlist[0 .. (i-1)].concat(@flatlist[(i+1) ..])
 
 
 
@@ -101,8 +130,8 @@ class ConnectionHelper
 
 
 class LocationFinder
-  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
 
+  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
   find: (x, y) ->
     a = Math.floor((x - 18) / 25)
     b = Math.floor((y - 18) / 25)

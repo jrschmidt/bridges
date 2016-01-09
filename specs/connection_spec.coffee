@@ -106,3 +106,7 @@ describe "Connection functions", ->
     expect(points).toContain([5,5])
     expect(points).toContain([2,6])
     expect(points).toContain([4,6])
+
+
+
+  xit "should add a link to the list of chains"

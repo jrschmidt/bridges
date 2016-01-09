@@ -41,20 +41,36 @@ BridgesApp = (function() {
 
 PointsList = (function() {
   function PointsList() {
-    var a, b, i, j, k;
+    var a, b, j, k, l;
     this.list = [];
-    for (b = i = 1; i <= 15; b = ++i) {
+    this.flatlist = [];
+    for (b = j = 1; j <= 15; b = ++j) {
       if (b % 2 === 1) {
-        for (a = j = 1; j <= 15; a = j += 2) {
+        for (a = k = 1; k <= 15; a = k += 2) {
           this.list.push([a, b]);
+          this.flatlist.push(a * 100 + b);
         }
       } else {
-        for (a = k = 2; k <= 14; a = k += 2) {
+        for (a = l = 2; l <= 14; a = l += 2) {
           this.list.push([a, b]);
+          this.flatlist.push(a * 100 + b);
         }
       }
     }
   }
+
+  PointsList.prototype.remove = function(point) {
+    var i;
+    alert("removing point " + point[0] + "," + point[1]);
+    i = this.flatlist.indexOf(100 * point[0] + point[1]);
+    alert("i = " + i);
+    if (i >= 0) {
+      this.list = this.list.slice(0, +(i - 1) + 1 || 9e9).concat(this.list.slice(i + 1));
+      this.flatlist = this.flatlist.slice(0, +(i - 1) + 1 || 9e9).concat(this.flatlist.slice(i + 1));
+    }
+    alert("list.length = " + this.list.length);
+    return alert("flatlist.length = " + this.flatlist.length);
+  };
 
   return PointsList;
 
@@ -67,7 +83,7 @@ ConnectionHelper = (function() {
   }
 
   ConnectionHelper.prototype.findConnectors = function(color, a, b) {
-    var aa, bb, cnxx, d, deltas, dir, i, len;
+    var aa, bb, cnxx, d, deltas, dir, j, len;
     cnxx = [];
     dir = this.findVH(color, a, b);
     if (dir === 'vert') {
@@ -75,8 +91,8 @@ ConnectionHelper = (function() {
     } else {
       deltas = this.hz;
     }
-    for (i = 0, len = deltas.length; i < len; i++) {
-      d = deltas[i];
+    for (j = 0, len = deltas.length; j < len; j++) {
+      d = deltas[j];
       aa = a + d[0];
       bb = b + d[1];
       if (aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15) {

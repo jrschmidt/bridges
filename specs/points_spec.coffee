@@ -2,15 +2,20 @@ describe "Points status object", ->
 
   it "should remove an item from an array", ->
     points = new PointsList
-    points.list = [1,2,3,4,5,6,7,8,9]
-    points.remove(13)
-    expect(points.list.length).toEqual(9)
-    points.remove(6)
-    expect(points.list.length).toEqual(8)
-    points.remove(1)
-    expect(.length).toEqual(7)
-    points.remove(8)
-    expect(z.length).toEqual(6)
+    list = points.list
+    flat = points.flatlist
+
+    expect(list.length).toEqual(113)
+    points.remove([18,32])
+    expect(points.list.length).toEqual(113)
+    points.remove([4,10])
+    expect(points.list.length).toEqual(112)
+    points.remove([13,7])
+    expect(points.list.length).toEqual(111)
+    points.remove([12,8])
+    expect(points.list.length).toEqual(110)
+    points.remove([5,3])
+    expect(points.list.length).toEqual(109)
 
 
   it "should generate a fresh list of open points", ->
