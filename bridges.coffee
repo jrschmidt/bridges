@@ -32,10 +32,16 @@ class BridgesApp
     @context.drawImage(base,0,0)
 
     @points = new PointsList
+    @locFind = new LocationFinder
+    @bridgeDraw = new BridgeDraw(@context)
 
 
   handleClick: (xx,yy) ->
     console.log "BridgesApp.handleClick(#{xx}, #{yy})"
+    ab = @locFind.find(xx,yy)
+    if ab[0] >= 0
+      console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
+      @bridgeDraw.drawBridge('green', ab[0], ab[1])
 
 
 
@@ -131,6 +137,17 @@ class ConnectionHelper
         return 'horz'
       else
         return 'vert'
+
+
+
+class BridgeDraw
+
+  constructor: (canvasContext) ->
+    @context = canvasContext
+
+
+  drawBridge: (color, a, b) ->
+    console.log("call BridegDraw.drawBridge( #{color}, #{a}, #{b})")
 
 
 
