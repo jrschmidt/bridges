@@ -1,5 +1,5 @@
 # BRIDGES GAME
-# by JR Schmidt 2015
+# by JR Schmidt 2016
 
 
 window.onload = ->
@@ -131,6 +131,15 @@ class ConnectionHelper
         return 'horz'
       else
         return 'vert'
+
+
+
+class DrawHelper
+
+  getXY: (a,b) ->
+    x = 30 + 25*a
+    y = 30 + 25*b
+    return [x,y]
 
 
 

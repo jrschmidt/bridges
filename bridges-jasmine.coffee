@@ -134,6 +134,15 @@ class ConnectionHelper
 
 
 
+class DrawHelper
+
+  getXY: (a,b) ->
+    x = 30 + 25*a
+    y = 30 + 25*b
+    return [x,y]
+
+
+
 class LocationFinder
 
   # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
