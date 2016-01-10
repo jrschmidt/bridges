@@ -5,7 +5,7 @@
 # window.onload = ->
 #   base = new Image()
 #   base.onload = =>
-#     bridges = new BridgesApp(base)
+#     @bridges = new BridgesApp(base)
 #     console.log('base.png Image.onload() called')
 #   base.src = 'base.png'
 #
@@ -18,7 +18,8 @@
 #   py = e.pageY
 #   x = px-dx
 #   y = py-dy
-#   alert "click at #{x}, #{y}"
+#   console.log "[@mousedown] click at #{x}, #{y}"
+#   @bridges.handleClick(x,y)
 
 
 
@@ -31,6 +32,10 @@ class BridgesApp
     @context.drawImage(base,0,0)
 
     @points = new PointsList
+
+
+  handleClick: (xx,yy) ->
+    console.log "BridgesApp.handleClick(#{xx}, #{yy})"
 
 
 
@@ -51,7 +56,7 @@ class PointsList
 # which only works for 'scalar' values.
 
 # [ [7,13], [15,3], [6,10] ].indexOf([6,10])
-# will return -1 (even though [6, 10 is in the array), but
+# will return -1 (even though [6,10] is in the array), but
 
 # [713, 1503, 610].indexOf(610)
 # will return 2.
@@ -71,18 +76,10 @@ class PointsList
 
 
   remove: (point) ->
-    alert "removing point #{point[0]},#{point[1]}"
     i = @flatlist.indexOf(100*point[0] + point[1])
-    alert "i = #{i}"
     if i >= 0
-      # j = i-1
-      # k = i+1
-      # @list = @list[0..j].concat(@list[k..])
-      # @flatlist = @flatlist[0..j].concat(@flatlist[k..])
       @list = @list[0 .. (i-1)].concat(@list[(i+1) ..])
       @flatlist = @flatlist[0 .. (i-1)].concat(@flatlist[(i+1) ..])
-    alert "list.length = #{@list.length}"
-    alert "flatlist.length = #{@flatlist.length}"
 
 
 
@@ -138,8 +135,8 @@ class ConnectionHelper
 
 
 class LocationFinder
-  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
 
+  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
   find: (x, y) ->
     a = Math.floor((x - 18) / 25)
     b = Math.floor((y - 18) / 25)

@@ -10,6 +10,10 @@ BridgesApp = (function() {
     this.points = new PointsList;
   }
 
+  BridgesApp.prototype.handleClick = function(xx, yy) {
+    return console.log("BridgesApp.handleClick(" + xx + ", " + yy + ")");
+  };
+
   return BridgesApp;
 
 })();
@@ -36,15 +40,11 @@ PointsList = (function() {
 
   PointsList.prototype.remove = function(point) {
     var i;
-    alert("removing point " + point[0] + "," + point[1]);
     i = this.flatlist.indexOf(100 * point[0] + point[1]);
-    alert("i = " + i);
     if (i >= 0) {
       this.list = this.list.slice(0, +(i - 1) + 1 || 9e9).concat(this.list.slice(i + 1));
-      this.flatlist = this.flatlist.slice(0, +(i - 1) + 1 || 9e9).concat(this.flatlist.slice(i + 1));
+      return this.flatlist = this.flatlist.slice(0, +(i - 1) + 1 || 9e9).concat(this.flatlist.slice(i + 1));
     }
-    alert("list.length = " + this.list.length);
-    return alert("flatlist.length = " + this.flatlist.length);
   };
 
   return PointsList;

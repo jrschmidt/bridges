@@ -5,7 +5,7 @@
 window.onload = ->
   base = new Image()
   base.onload = =>
-    bridges = new BridgesApp(base)
+    @bridges = new BridgesApp(base)
     console.log('base.png Image.onload() called')
   base.src = 'base.png'
 
@@ -18,7 +18,8 @@ window.onload = ->
   py = e.pageY
   x = px-dx
   y = py-dy
-  alert "click at #{x}, #{y}"
+  console.log "[@mousedown] click at #{x}, #{y}"
+  @bridges.handleClick(x,y)
 
 
 
@@ -31,6 +32,10 @@ class BridgesApp
     @context.drawImage(base,0,0)
 
     @points = new PointsList
+
+
+  handleClick: (xx,yy) ->
+    console.log "BridgesApp.handleClick(#{xx}, #{yy})"
 
 
 

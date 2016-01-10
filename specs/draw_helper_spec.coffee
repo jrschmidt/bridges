@@ -1,8 +1,28 @@
 describe "Drawing helpers", ->
 
-#   it "should remove an item from an array", ->
-#     points = new PointsList
-#     list = points.list
-#     flat = points.flatlist
-#
-#     expect(list.length).toEqual(113)
+  it "should find the base pixel for gamepoint [a,b]", ->
+    drawhelp = new DrawHelper
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
+
+    base = drawhelp.getXY()
+    expect(base[0]).toEqual()
+    expect(base[1]).toEqual()
