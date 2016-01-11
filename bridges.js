@@ -35,7 +35,7 @@ BridgesApp = (function() {
     this.boardHelper = new BoardGeometryHelper;
     this.points = new PointsList;
     this.connect = new ConnectionHelper(this.boardHelper);
-    this.bridgeDraw = new BridgeDraw(this.context);
+    this.bridgeDraw = new BridgeDraw(this.context, this.boardHelper);
   }
 
   BridgesApp.prototype.handleClick = function(xx, yy) {
@@ -117,12 +117,26 @@ ConnectionHelper = (function() {
 })();
 
 BridgeDraw = (function() {
-  function BridgeDraw(canvasContext) {
+  function BridgeDraw(canvasContext, boardHelper) {
     this.context = canvasContext;
+    this.helper = boardHelper;
   }
 
   BridgeDraw.prototype.drawBridge = function(color, a, b) {
-    return console.log("call BridegDraw.drawBridge( " + color + ", " + a + ", " + b + ")");
+    console.log("call BridegDraw.drawBridge( " + color + ", " + a + ", " + b + ")");
+    return this.yellowdot(a, b);
+  };
+
+  BridgeDraw.prototype.yellowdot = function(a, b) {
+    var xy;
+    console.log("yellowdot(" + a + ", " + b + ")");
+    xy = this.helper.getXY(a, b);
+    this.context.fillStyle = "#ffff00";
+    this.context.beginPath();
+    this.context.arc(xy[0] + 0.5, xy[1] + 0.5, 10, 0, 2 * Math.PI, false);
+    this.context.fill();
+    this.context.stroke();
+    return this.context.closePath();
   };
 
   return BridgeDraw;

@@ -34,7 +34,7 @@ class BridgesApp
     @boardHelper = new BoardGeometryHelper
     @points = new PointsList
     @connect = new ConnectionHelper(@boardHelper)
-    @bridgeDraw = new BridgeDraw(@context)
+    @bridgeDraw = new BridgeDraw(@context, @boardHelper)
 
 
   handleClick: (xx,yy) ->
@@ -131,12 +131,29 @@ class ConnectionHelper
 
 class BridgeDraw
 
-  constructor: (canvasContext) ->
+  constructor: (canvasContext, boardHelper) ->
     @context = canvasContext
+    @helper = boardHelper
 
 
   drawBridge: (color, a, b) ->
     console.log("call BridegDraw.drawBridge( #{color}, #{a}, #{b})")
+    @yellowdot(a,b)
+    # xxyy = @helper.getXY(a, b)
+    # xx = xxyy[0]
+    # yy = xxyy[1]
+
+
+# Draw a yellow dot for test purposes.
+  yellowdot: (a,b) ->
+    console.log("yellowdot(#{a}, #{b})")
+    xy = @helper.getXY(a,b)
+    @context.fillStyle = "#ffff00"
+    @context.beginPath()
+    @context.arc(xy[0] + 0.5,xy[1] + 0.5,10,0,2*Math.PI,false)
+    @context.fill()
+    @context.stroke()
+    @context.closePath()
 
 
 
