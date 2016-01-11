@@ -120,11 +120,43 @@ BridgeDraw = (function() {
   function BridgeDraw(canvasContext, boardHelper) {
     this.context = canvasContext;
     this.helper = boardHelper;
+    this.bcolors = {
+      'green': '#146614',
+      'red': '#993333'
+    };
   }
 
   BridgeDraw.prototype.drawBridge = function(color, a, b) {
+    var colorcode, ht1, ht2, vh, wd1, wd2, x1, x2, xx, xxyy, y1, y2, yy;
     console.log("call BridegDraw.drawBridge( " + color + ", " + a + ", " + b + ")");
-    return this.yellowdot(a, b);
+    colorcode = this.bcolors[color];
+    xxyy = this.helper.getXY(a, b);
+    xx = xxyy[0];
+    yy = xxyy[1];
+    vh = this.helper.findVH(color, a, b);
+    if (vh === 'vert') {
+      x1 = xx - 3;
+      x2 = x1 + 1;
+      y1 = yy - 18;
+      y2 = y1;
+      wd1 = 7;
+      wd2 = 5;
+      ht1 = 37;
+      ht2 = 37;
+    } else {
+      x1 = xx - 18;
+      x2 = x1;
+      y1 = yy - 3;
+      y2 = y1 + 1;
+      wd1 = 37;
+      wd2 = 37;
+      ht1 = 7;
+      ht2 = 5;
+    }
+    this.context.fillStyle = '#000000';
+    this.context.fillRect(x1, y1, wd1, ht1);
+    this.context.fillStyle = colorcode;
+    return this.context.fillRect(x2, y2, wd2, ht2);
   };
 
   BridgeDraw.prototype.yellowdot = function(a, b) {
