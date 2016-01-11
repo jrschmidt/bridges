@@ -1,5 +1,5 @@
 # BRIDGES GAME
-# by JR Schmidt 2015
+# by JR Schmidt 2016
 
 
 # window.onload = ->
@@ -31,11 +31,18 @@ class BridgesApp
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
 
+    @boardHelper = new BoardGeometryHelper
     @points = new PointsList
+    @connect = new ConnectionHelper(@boardHelper)
+    @bridgeDraw = new BridgeDraw(@context)
 
 
   handleClick: (xx,yy) ->
     console.log "BridgesApp.handleClick(#{xx}, #{yy})"
+    ab = @boardHelper.getAB(xx,yy)
+    if ab[0] >= 0
+      console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
+      @bridgeDraw.drawBridge('green', ab[0], ab[1])
 
 
 
@@ -85,7 +92,9 @@ class PointsList
 
 class ConnectionHelper
 
-  constructor: ->
+  constructor: (boardHelper) ->
+    @boardHelper = boardHelper
+
     @vt = [
       [0,-2]
       [-1,-1]
@@ -107,7 +116,7 @@ class ConnectionHelper
 
   findConnectors: (color, a, b) ->
     cnxx = []
-    dir = @findVH(color, a, b)
+    dir = @boardHelper.findVH(color, a, b)
     if dir == 'vert'
       deltas = @vt
     else
@@ -119,6 +128,38 @@ class ConnectionHelper
     return cnxx
 
 
+
+class BridgeDraw
+
+  constructor: (canvasContext) ->
+    @context = canvasContext
+
+
+  drawBridge: (color, a, b) ->
+    console.log("call BridegDraw.drawBridge( #{color}, #{a}, #{b})")
+
+
+
+class BoardGeometryHelper
+
+  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
+  getAB: (x, y) ->
+    a = Math.floor((x - 18) / 25)
+    b = Math.floor((y - 18) / 25)
+    if (a + b) % 2 != 0 or a < 1 or a > 15 or b < 1 or b > 15
+      return [-1, -1]
+    else
+      return [a, b]
+
+
+  # Find the center pixel (x,y) for gameboard coordinates (a,b).
+  getXY: (a,b) ->
+    x = 30 + 25*a
+    y = 30 + 25*b
+    return [x,y]
+
+
+# Determine if the bridge for a particluar color at (a,b) is vertical or horizontal.
   findVH: (color, a, b) ->
     if color == 'green'
       if a % 2 == 1
@@ -131,25 +172,3 @@ class ConnectionHelper
         return 'horz'
       else
         return 'vert'
-
-
-
-class DrawHelper
-
-  getXY: (a,b) ->
-    x = 30 + 25*a
-    y = 30 + 25*b
-    return [x,y]
-
-
-
-class LocationFinder
-
-  # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
-  find: (x, y) ->
-    a = Math.floor((x - 18) / 25)
-    b = Math.floor((y - 18) / 25)
-    if (a + b) % 2 != 0 or a < 1 or a > 15 or b < 1 or b > 15
-      return [-1, -1]
-    else
-      return [a, b]

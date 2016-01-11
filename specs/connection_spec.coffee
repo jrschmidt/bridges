@@ -1,7 +1,8 @@
 describe "Connection functions", ->
 
   it "should find connecting neighbors for a gameboard point", ->
-    connect = new ConnectionHelper
+    boardHelper = new BoardGeometryHelper
+    connect = new ConnectionHelper(boardHelper)
 
     points = connect.findConnectors('green', 7, 7)
     expect(points.length).toEqual(6)

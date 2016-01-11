@@ -31,14 +31,15 @@ class BridgesApp
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
 
+    @boardHelper = new BoardGeometryHelper
     @points = new PointsList
-    @locFind = new LocationFinder
+    @connect = new ConnectionHelper(@boardHelper)
     @bridgeDraw = new BridgeDraw(@context)
 
 
   handleClick: (xx,yy) ->
     console.log "BridgesApp.handleClick(#{xx}, #{yy})"
-    ab = @locFind.find(xx,yy)
+    ab = @boardHelper.getAB(xx,yy)
     if ab[0] >= 0
       console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
       @bridgeDraw.drawBridge('green', ab[0], ab[1])
@@ -91,7 +92,9 @@ class PointsList
 
 class ConnectionHelper
 
-  constructor: ->
+  constructor: (boardHelper) ->
+    @boardHelper = boardHelper
+
     @vt = [
       [0,-2]
       [-1,-1]
@@ -113,7 +116,7 @@ class ConnectionHelper
 
   findConnectors: (color, a, b) ->
     cnxx = []
-    dir = @findVH(color, a, b)
+    dir = @boardHelper.findVH(color, a, b)
     if dir == 'vert'
       deltas = @vt
     else
@@ -123,20 +126,6 @@ class ConnectionHelper
       bb = b + d[1]
       cnxx.push([aa,bb]) if aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15
     return cnxx
-
-
-  findVH: (color, a, b) ->
-    if color == 'green'
-      if a % 2 == 1
-        return 'vert'
-      else
-        return 'horz'
-
-    else
-      if a % 2 == 1
-        return 'horz'
-      else
-        return 'vert'
 
 
 
@@ -151,22 +140,35 @@ class BridgeDraw
 
 
 
-class DrawHelper
-
-  getXY: (a,b) ->
-    x = 30 + 25*a
-    y = 30 + 25*b
-    return [x,y]
-
-
-
-class LocationFinder
+class BoardGeometryHelper
 
   # Find the gameboard coordinates (a,b) of a pixel on the canvas (x,y).
-  find: (x, y) ->
+  getAB: (x, y) ->
     a = Math.floor((x - 18) / 25)
     b = Math.floor((y - 18) / 25)
     if (a + b) % 2 != 0 or a < 1 or a > 15 or b < 1 or b > 15
       return [-1, -1]
     else
       return [a, b]
+
+
+  # Find the center pixel (x,y) for gameboard coordinates (a,b).
+  getXY: (a,b) ->
+    x = 30 + 25*a
+    y = 30 + 25*b
+    return [x,y]
+
+
+# Determine if the bridge for a particluar color at (a,b) is vertical or horizontal.
+  findVH: (color, a, b) ->
+    if color == 'green'
+      if a % 2 == 1
+        return 'vert'
+      else
+        return 'horz'
+
+    else
+      if a % 2 == 1
+        return 'horz'
+      else
+        return 'vert'
