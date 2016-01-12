@@ -63,28 +63,19 @@ PointsList = (function() {
 ConnectionHelper = (function() {
   function ConnectionHelper(boardHelper) {
     this.boardHelper = boardHelper;
-    this.vt = [[0, -2], [-1, -1], [1, -1], [-1, 1], [1, 1], [0, 2]];
-    this.hz = [[-1, -1], [1, -1], [-2, 0], [2, 0], [-1, 1], [1, 1]];
   }
 
-  ConnectionHelper.prototype.findConnectors = function(color, a, b) {
-    var aa, bb, cnxx, d, deltas, dir, j, len;
-    cnxx = [];
+  ConnectionHelper.prototype.findEndpoints = function(color, a, b) {
+    var dir, e1, e2;
     dir = this.boardHelper.findVH(color, a, b);
     if (dir === 'vert') {
-      deltas = this.vt;
+      e1 = 100 * a + b - 1;
+      e2 = e1 + 2;
     } else {
-      deltas = this.hz;
+      e1 = 100 * (a - 1) + b;
+      e2 = e1 + 200;
     }
-    for (j = 0, len = deltas.length; j < len; j++) {
-      d = deltas[j];
-      aa = a + d[0];
-      bb = b + d[1];
-      if (aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15) {
-        cnxx.push([aa, bb]);
-      }
-    }
-    return cnxx;
+    return [e1, e2];
   };
 
   return ConnectionHelper;

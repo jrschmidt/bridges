@@ -95,37 +95,30 @@ class ConnectionHelper
   constructor: (boardHelper) ->
     @boardHelper = boardHelper
 
-    @vt = [
-      [0,-2]
-      [-1,-1]
-      [1,-1]
-      [-1,1]
-      [1,1]
-      [0,2]
-    ]
 
-    @hz = [
-      [-1,-1]
-      [1,-1]
-      [-2,0]
-      [2,0]
-      [-1,1]
-      [1,1]
-    ]
-
-
-  findConnectors: (color, a, b) ->
-    cnxx = []
+  findEndpoints: (color, a, b) ->
     dir = @boardHelper.findVH(color, a, b)
     if dir == 'vert'
-      deltas = @vt
+      e1 = 100*a + b - 1
+      e2 = e1 + 2
     else
-      deltas = @hz
-    for d in deltas
-      aa = a + d[0]
-      bb = b + d[1]
-      cnxx.push([aa,bb]) if aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15
-    return cnxx
+      e1 = 100 * (a-1) + b
+      e2 = e1 + 200
+    return [e1, e2]
+  #
+  #
+  # findConnectors: (color, a, b) ->
+  #   cnxx = []
+  #   dir = @boardHelper.findVH(color, a, b)
+  #   if dir == 'vert'
+  #     deltas = @vt
+  #   else
+  #     deltas = @hz
+  #   for d in deltas
+  #     aa = a + d[0]
+  #     bb = b + d[1]
+  #     cnxx.push([aa,bb]) if aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15
+  #   return cnxx
 
 
 
