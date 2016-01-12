@@ -32,6 +32,7 @@ BridgesApp = (function() {
     this.canvas = document.getElementById("bridges-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.drawImage(base, 0, 0);
+    this.temp = 'green';
     this.boardHelper = new BoardGeometryHelper;
     this.points = new PointsList;
     this.connect = new ConnectionHelper(this.boardHelper);
@@ -44,7 +45,12 @@ BridgesApp = (function() {
     ab = this.boardHelper.getAB(xx, yy);
     if (ab[0] >= 0) {
       console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
-      return this.bridgeDraw.drawBridge('green', ab[0], ab[1]);
+      this.bridgeDraw.drawBridge(this.temp, ab[0], ab[1]);
+      if (this.temp === 'green') {
+        return this.temp = 'red';
+      } else {
+        return this.temp = 'green';
+      }
     }
   };
 

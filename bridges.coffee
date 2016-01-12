@@ -30,6 +30,7 @@ class BridgesApp
     @canvas = document.getElementById("bridges-canvas")
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
+    @temp = 'green'
 
     @boardHelper = new BoardGeometryHelper
     @points = new PointsList
@@ -42,7 +43,11 @@ class BridgesApp
     ab = @boardHelper.getAB(xx,yy)
     if ab[0] >= 0
       console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
-      @bridgeDraw.drawBridge('green', ab[0], ab[1])
+      @bridgeDraw.drawBridge(@temp, ab[0], ab[1])
+      if @temp == 'green'
+        @temp = 'red'
+      else
+        @temp = 'green'
 
 
 
@@ -105,20 +110,6 @@ class ConnectionHelper
       e1 = 100 * (a-1) + b
       e2 = e1 + 200
     return [e1, e2]
-  #
-  #
-  # findConnectors: (color, a, b) ->
-  #   cnxx = []
-  #   dir = @boardHelper.findVH(color, a, b)
-  #   if dir == 'vert'
-  #     deltas = @vt
-  #   else
-  #     deltas = @hz
-  #   for d in deltas
-  #     aa = a + d[0]
-  #     bb = b + d[1]
-  #     cnxx.push([aa,bb]) if aa >= 1 && aa <= 15 && bb >= 1 && bb <= 15
-  #   return cnxx
 
 
 
