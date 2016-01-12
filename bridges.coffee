@@ -100,6 +100,16 @@ class ConnectionHelper
   constructor: (boardHelper) ->
     @boardHelper = boardHelper
 
+    @chains = {
+      green: []
+      red: []
+    }
+
+
+  addBridge: (color, a, b) ->
+    ends = @findEndpoints(color, a, b)
+    @chains[color].push([ends[0], ends[1]])
+
 
   findEndpoints: (color, a, b) ->
     dir = @boardHelper.findVH(color, a, b)

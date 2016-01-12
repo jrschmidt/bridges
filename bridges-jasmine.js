@@ -7,6 +7,7 @@ BridgesApp = (function() {
     this.canvas = document.getElementById("bridges-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.drawImage(base, 0, 0);
+    this.temp = 'green';
     this.boardHelper = new BoardGeometryHelper;
     this.points = new PointsList;
     this.connect = new ConnectionHelper(this.boardHelper);
@@ -19,7 +20,12 @@ BridgesApp = (function() {
     ab = this.boardHelper.getAB(xx, yy);
     if (ab[0] >= 0) {
       console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
-      return this.bridgeDraw.drawBridge('green', ab[0], ab[1]);
+      this.bridgeDraw.drawBridge(this.temp, ab[0], ab[1]);
+      if (this.temp === 'green') {
+        return this.temp = 'red';
+      } else {
+        return this.temp = 'green';
+      }
     }
   };
 
@@ -63,7 +69,17 @@ PointsList = (function() {
 ConnectionHelper = (function() {
   function ConnectionHelper(boardHelper) {
     this.boardHelper = boardHelper;
+    this.chains = {
+      green: [],
+      red: []
+    };
   }
+
+  ConnectionHelper.prototype.addBridge = function(color, a, b) {
+    var ends;
+    ends = this.findEndpoints(color, a, b);
+    return this.chains[color].push([ends[0], ends[1]]);
+  };
 
   ConnectionHelper.prototype.findEndpoints = function(color, a, b) {
     var dir, e1, e2;

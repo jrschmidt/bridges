@@ -94,7 +94,17 @@ PointsList = (function() {
 ConnectionHelper = (function() {
   function ConnectionHelper(boardHelper) {
     this.boardHelper = boardHelper;
+    this.chains = {
+      green: [],
+      red: []
+    };
   }
+
+  ConnectionHelper.prototype.addBridge = function(color, a, b) {
+    var ends;
+    ends = this.findEndpoints(color, a, b);
+    return this.chains[color].push([ends[0], ends[1]]);
+  };
 
   ConnectionHelper.prototype.findEndpoints = function(color, a, b) {
     var dir, e1, e2;
