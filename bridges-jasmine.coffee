@@ -33,9 +33,8 @@ class BridgesApp
     @temp = 'green'
 
     @boardHelper = new BoardGeometryHelper
-    @points = new PointsList
-    @connect = new ConnectionHelper(@boardHelper)
     @bridgeDraw = new BridgeDraw(@context, @boardHelper)
+    @status = new GameStatus(@boardHelper)
 
 
   handleClick: (xx,yy) ->
@@ -48,6 +47,15 @@ class BridgesApp
         @temp = 'red'
       else
         @temp = 'green'
+
+
+
+class GameStatus
+
+  constructor: (helper) ->
+    @helper = helper
+    @points = new PointsList
+    @connect = new ConnectionHelper(@helper)
 
 
 
