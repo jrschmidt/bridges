@@ -108,7 +108,24 @@ class ConnectionHelper
 
   addBridge: (color, a, b) ->
     ends = @findEndpoints(color, a, b)
-    @chains[color].push([ends[0], ends[1]])
+    connect = @findConnectingChains(color, ends)
+    switch connect.length
+      when 0 #new chain
+        @chains[color].push([ends[0], ends[1]])
+      when 1 #add to existing chain
+        ch = @chains[color][connect[0]]
+        ch.push(ends[0]) if ch.indexOf(ends[0]) < 0
+        ch.push(ends[1]) if ch.indexOf(ends[1]) < 0
+      when 2 #new bridge links two chains together
+        cc = cc
+
+
+  findConnectingChains: (color, ends) ->
+    connect = []
+    for i of @chains[color]
+      connect.push(i) if @chains[color][i].indexOf(ends[0]) >= 0
+      connect.push(i) if @chains[color][i].indexOf(ends[1]) >= 0
+    return connect
 
 
   findEndpoints: (color, a, b) ->

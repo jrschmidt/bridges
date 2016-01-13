@@ -101,9 +101,38 @@ ConnectionHelper = (function() {
   }
 
   ConnectionHelper.prototype.addBridge = function(color, a, b) {
-    var ends;
+    var cc, ch, connect, ends;
     ends = this.findEndpoints(color, a, b);
-    return this.chains[color].push([ends[0], ends[1]]);
+    connect = this.findConnectingChains(color, ends);
+    switch (connect.length) {
+      case 0:
+        return this.chains[color].push([ends[0], ends[1]]);
+      case 1:
+        ch = this.chains[color][connect[0]];
+        if (ch.indexOf(ends[0]) < 0) {
+          ch.push(ends[0]);
+        }
+        if (ch.indexOf(ends[1]) < 0) {
+          return ch.push(ends[1]);
+        }
+        break;
+      case 2:
+        return cc = cc;
+    }
+  };
+
+  ConnectionHelper.prototype.findConnectingChains = function(color, ends) {
+    var connect, i;
+    connect = [];
+    for (i in this.chains[color]) {
+      if (this.chains[color][i].indexOf(ends[0]) >= 0) {
+        connect.push(i);
+      }
+      if (this.chains[color][i].indexOf(ends[1]) >= 0) {
+        connect.push(i);
+      }
+    }
+    return connect;
   };
 
   ConnectionHelper.prototype.findEndpoints = function(color, a, b) {

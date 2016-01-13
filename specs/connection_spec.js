@@ -102,7 +102,7 @@ describe("Connection functions", function() {
     expect(this.connect.chains.red[2]).toContain(813);
     return expect(this.connect.chains.red[2]).toContain(1013);
   });
-  xit("should add a new bridge to a chain", function() {
+  it("should add a new bridge to a chain", function() {
     this.connect.addBridge('green', 5, 7);
     expect(this.connect.chains.red.length).toEqual(3);
     expect(this.connect.chains.green.length).toEqual(3);

@@ -125,7 +125,7 @@ describe "Connection functions", ->
 
 
 
-  xit "should add a new bridge to a chain", ->
+  it "should add a new bridge to a chain", ->
 
     @connect.addBridge('green', 5, 7)
     expect(@connect.chains.red.length).toEqual(3)
