@@ -20,7 +20,7 @@
 #   y = py-dy
 #   console.log "[@mousedown] click at #{x}, #{y}"
 #   @bridges.handleClick(x,y)
-
+#
 
 
 class BridgesApp
@@ -30,23 +30,25 @@ class BridgesApp
     @canvas = document.getElementById("bridges-canvas")
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
-    @temp = 'green'
 
     @boardHelper = new BoardGeometryHelper
     @bridgeDraw = new BridgeDraw(@context, @boardHelper)
     @status = new GameStatus(@boardHelper)
+    @temp = 'green'
 
 
   handleClick: (xx,yy) ->
     console.log "BridgesApp.handleClick(#{xx}, #{yy})"
     ab = @boardHelper.getAB(xx,yy)
     if ab[0] >= 0
-      console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
-      @bridgeDraw.drawBridge(@temp, ab[0], ab[1])
-      if @temp == 'green'
-        @temp = 'red'
-      else
-        @temp = 'green'
+      if @status.legalMove(@temp, ab[0], ab[1])
+        console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
+        @status.makeMove(@temp, ab[0], ab[1])
+        @bridgeDraw.drawBridge(@temp, ab[0], ab[1])
+        if @temp == 'green'
+          @temp = 'red'
+        else
+          @temp = 'green'
 
 
 
@@ -56,6 +58,19 @@ class GameStatus
     @helper = helper
     @points = new PointsList
     @connect = new ConnectionHelper(@helper)
+
+    @mode = 'active'
+
+
+  makeMove: (color, a, b) ->
+    console.log("makeMove(#{color}, #{a}, #{b})")
+
+
+  legalMove: (color, a, b) ->
+    if @points.listContains(a, b)
+      return true
+    else
+      rreturn false
 
 
 
@@ -95,8 +110,16 @@ class PointsList
           @flatlist.push(a*100 + b)
 
 
-  remove: (point) ->
-    i = @flatlist.indexOf(100*point[0] + point[1])
+  listContains: (a, b) ->
+
+    if @flatlist.indexOf(100*a + b) < 0
+      return false
+    else
+      return true
+
+
+  remove: (a, b) ->
+    i = @flatlist.indexOf(100*a + b)
     if i >= 0
       @list = @list[0 .. (i-1)].concat(@list[(i+1) ..])
       @flatlist = @flatlist[0 .. (i-1)].concat(@flatlist[(i+1) ..])

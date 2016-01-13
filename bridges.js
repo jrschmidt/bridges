@@ -32,10 +32,10 @@ BridgesApp = (function() {
     this.canvas = document.getElementById("bridges-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.drawImage(base, 0, 0);
-    this.temp = 'green';
     this.boardHelper = new BoardGeometryHelper;
     this.bridgeDraw = new BridgeDraw(this.context, this.boardHelper);
     this.status = new GameStatus(this.boardHelper);
+    this.temp = 'green';
   }
 
   BridgesApp.prototype.handleClick = function(xx, yy) {
@@ -43,12 +43,15 @@ BridgesApp = (function() {
     console.log("BridgesApp.handleClick(" + xx + ", " + yy + ")");
     ab = this.boardHelper.getAB(xx, yy);
     if (ab[0] >= 0) {
-      console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
-      this.bridgeDraw.drawBridge(this.temp, ab[0], ab[1]);
-      if (this.temp === 'green') {
-        return this.temp = 'red';
-      } else {
-        return this.temp = 'green';
+      if (this.status.legalMove(this.temp, ab[0], ab[1])) {
+        console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
+        this.status.makeMove(this.temp, ab[0], ab[1]);
+        this.bridgeDraw.drawBridge(this.temp, ab[0], ab[1]);
+        if (this.temp === 'green') {
+          return this.temp = 'red';
+        } else {
+          return this.temp = 'green';
+        }
       }
     }
   };
@@ -62,7 +65,20 @@ GameStatus = (function() {
     this.helper = helper;
     this.points = new PointsList;
     this.connect = new ConnectionHelper(this.helper);
+    this.mode = 'active';
   }
+
+  GameStatus.prototype.makeMove = function(color, a, b) {
+    return console.log("makeMove(" + color + ", " + a + ", " + b + ")");
+  };
+
+  GameStatus.prototype.legalMove = function(color, a, b) {
+    if (this.points.listContains(a, b)) {
+      return true;
+    } else {
+      return rreturn(false);
+    }
+  };
 
   return GameStatus;
 
@@ -88,9 +104,17 @@ PointsList = (function() {
     }
   }
 
-  PointsList.prototype.remove = function(point) {
+  PointsList.prototype.listContains = function(a, b) {
+    if (this.flatlist.indexOf(100 * a + b) < 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  PointsList.prototype.remove = function(a, b) {
     var i;
-    i = this.flatlist.indexOf(100 * point[0] + point[1]);
+    i = this.flatlist.indexOf(100 * a + b);
     if (i >= 0) {
       this.list = this.list.slice(0, +(i - 1) + 1 || 9e9).concat(this.list.slice(i + 1));
       return this.flatlist = this.flatlist.slice(0, +(i - 1) + 1 || 9e9).concat(this.flatlist.slice(i + 1));
