@@ -183,7 +183,7 @@ describe "Connection functions", ->
 
 
 
-  xit "should combine two chains when a new bridge joins them together", ->
+  it "should combine two chains when a new bridge joins them together", ->
 
     @connect.addBridge('red', 10, 12)
     expect(@connect.chains.green.length).toEqual(4)

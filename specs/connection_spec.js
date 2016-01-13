@@ -151,7 +151,7 @@ describe("Connection functions", function() {
     expect(this.connect.chains.green[3]).toContain(708);
     return expect(this.connect.chains.green[3]).toContain(908);
   });
-  return xit("should combine two chains when a new bridge joins them together", function() {
+  return it("should combine two chains when a new bridge joins them together", function() {
     this.connect.addBridge('red', 10, 12);
     expect(this.connect.chains.green.length).toEqual(4);
     expect(this.connect.chains.red.length).toEqual(3);

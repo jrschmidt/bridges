@@ -117,14 +117,21 @@ class ConnectionHelper
         ch.push(ends[0]) if ch.indexOf(ends[0]) < 0
         ch.push(ends[1]) if ch.indexOf(ends[1]) < 0
       when 2 #new bridge links two chains together
-        cc = cc
+        chx = []
+        i1 = connect[0]
+        i2 = connect[1]
+        for i in [0 .. @chains[color].length - 1]
+          chx.push(@chains[color][i]) if not (i == i1 or i == i2)
+        chx.push(@chains[color][i1].concat(@chains[color][i2]))
+        @chains[color] = chx
 
 
   findConnectingChains: (color, ends) ->
     connect = []
-    for i of @chains[color]
-      connect.push(i) if @chains[color][i].indexOf(ends[0]) >= 0
-      connect.push(i) if @chains[color][i].indexOf(ends[1]) >= 0
+    if @chains[color].length > 0
+      for i in [0 .. @chains[color].length - 1]
+        connect.push(i) if @chains[color][i].indexOf(ends[0]) >= 0
+        connect.push(i) if @chains[color][i].indexOf(ends[1]) >= 0
     return connect
 
 

@@ -101,7 +101,7 @@ ConnectionHelper = (function() {
   }
 
   ConnectionHelper.prototype.addBridge = function(color, a, b) {
-    var cc, ch, connect, ends;
+    var ch, chx, connect, ends, i, i1, i2, j, ref;
     ends = this.findEndpoints(color, a, b);
     connect = this.findConnectingChains(color, ends);
     switch (connect.length) {
@@ -117,19 +117,30 @@ ConnectionHelper = (function() {
         }
         break;
       case 2:
-        return cc = cc;
+        chx = [];
+        i1 = connect[0];
+        i2 = connect[1];
+        for (i = j = 0, ref = this.chains[color].length - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+          if (!(i === i1 || i === i2)) {
+            chx.push(this.chains[color][i]);
+          }
+        }
+        chx.push(this.chains[color][i1].concat(this.chains[color][i2]));
+        return this.chains[color] = chx;
     }
   };
 
   ConnectionHelper.prototype.findConnectingChains = function(color, ends) {
-    var connect, i;
+    var connect, i, j, ref;
     connect = [];
-    for (i in this.chains[color]) {
-      if (this.chains[color][i].indexOf(ends[0]) >= 0) {
-        connect.push(i);
-      }
-      if (this.chains[color][i].indexOf(ends[1]) >= 0) {
-        connect.push(i);
+    if (this.chains[color].length > 0) {
+      for (i = j = 0, ref = this.chains[color].length - 1; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+        if (this.chains[color][i].indexOf(ends[0]) >= 0) {
+          connect.push(i);
+        }
+        if (this.chains[color][i].indexOf(ends[1]) >= 0) {
+          connect.push(i);
+        }
       }
     }
     return connect;
