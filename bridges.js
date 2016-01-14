@@ -69,14 +69,15 @@ GameStatus = (function() {
   }
 
   GameStatus.prototype.makeMove = function(color, a, b) {
-    return console.log("makeMove(" + color + ", " + a + ", " + b + ")");
+    console.log("makeMove(" + color + ", " + a + ", " + b + ")");
+    return this.points.remove(a, b);
   };
 
   GameStatus.prototype.legalMove = function(color, a, b) {
     if (this.points.listContains(a, b)) {
       return true;
     } else {
-      return rreturn(false);
+      return false;
     }
   };
 
@@ -191,6 +192,42 @@ ConnectionHelper = (function() {
       e2 = e1 + 200;
     }
     return [e1, e2];
+  };
+
+  ConnectionHelper.prototype.winner = function() {
+    if (this.checkGreen()) {
+      return 'green';
+    } else {
+      if (this.checkRed()) {
+        return 'red';
+      } else {
+        return 'none';
+      }
+    }
+  };
+
+  ConnectionHelper.prototype.checkGreen = function() {
+    var gr;
+    gr = this.chains.green.some(function(ch) {
+      return ch.some(function(pt) {
+        return pt % 100 === 0;
+      }) && ch.some(function(pt) {
+        return pt % 100 === 16;
+      });
+    });
+    return gr;
+  };
+
+  ConnectionHelper.prototype.checkRed = function() {
+    var rd;
+    rd = this.chains.red.some(function(ch) {
+      return ch.some(function(pt) {
+        return pt >= 1 && pt <= 15 && pt % 2 === 1;
+      }) && ch.some(function(pt) {
+        return pt >= 1601 && pt <= 1615 && pt % 2 === 1;
+      });
+    });
+    return rd;
   };
 
   return ConnectionHelper;

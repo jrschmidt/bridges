@@ -64,13 +64,14 @@ class GameStatus
 
   makeMove: (color, a, b) ->
     console.log("makeMove(#{color}, #{a}, #{b})")
+    @points.remove(a, b)
 
 
   legalMove: (color, a, b) ->
     if @points.listContains(a, b)
       return true
     else
-      rreturn false
+      return false
 
 
 
@@ -157,6 +158,7 @@ class ConnectionHelper
         @chains[color] = chx
 
 
+
   findConnectingChains: (color, ends) ->
     connect = []
     if @chains[color].length > 0
@@ -175,6 +177,30 @@ class ConnectionHelper
       e1 = 100 * (a-1) + b
       e2 = e1 + 200
     return [e1, e2]
+
+
+  winner: ->
+    if @checkGreen()
+      return 'green'
+    else
+      if @checkRed()
+        return 'red'
+      else
+        return 'none'
+
+
+  checkGreen: ->
+    gr = @chains.green.some( (ch) ->
+      ch.some( (pt) -> pt % 100 == 0) && ch.some( (pt) -> pt % 100 == 16)
+    )
+    return gr
+
+
+  checkRed: ->
+    rd = @chains.red.some( (ch) ->
+      ch.some( (pt) -> pt >= 1 && pt <= 15 && pt % 2 == 1) && ch.some( (pt) -> pt >= 1601 && pt <= 1615 && pt % 2 == 1)
+    )
+    return rd
 
 
 

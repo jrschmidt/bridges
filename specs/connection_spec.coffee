@@ -1,8 +1,8 @@
 describe "Connection functions", ->
 
   beforeAll ->
-    boardHelper = new BoardGeometryHelper
-    @connect = new ConnectionHelper(boardHelper)
+    @boardHelper = new BoardGeometryHelper
+    @connect = new ConnectionHelper(@boardHelper)
 
 
   it "should find end points for a bridge placed on a gameboard point", ->
@@ -248,3 +248,85 @@ describe "Connection functions", ->
     expect(@connect.chains.green[1]).toContain(1106)
     expect(@connect.chains.green[1]).toContain(708)
     expect(@connect.chains.green[1]).toContain(908)
+
+
+
+  it "should know when one side makes a complete end to end connection", ->
+
+    # Green wins
+    @chGreen = new ConnectionHelper(@boardHelper)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 8, 6)
+    @chGreen.addBridge('red', 11, 11)
+    @chGreen.addBridge('green', 3, 13)
+    @chGreen.addBridge('red', 4, 14)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 4, 6)
+    @chGreen.addBridge('red', 9, 13)
+    @chGreen.addBridge('green', 5, 7)
+    @chGreen.addBridge('red', 13, 11)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 10, 6)
+    @chGreen.addBridge('red', 8, 12)
+    @chGreen.addBridge('green', 3, 11)
+    @chGreen.addBridge('red', 5, 3)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 8, 8)
+    @chGreen.addBridge('red', 10, 12)
+    @chGreen.addBridge('green', 7, 7)
+    @chGreen.addBridge('red', 7, 13)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 6, 8)
+    @chGreen.addBridge('red', 3, 3)
+    @chGreen.addBridge('green', 1, 3)
+    @chGreen.addBridge('red', 15, 5)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 1, 1)
+    @chGreen.addBridge('red', 2, 4)
+    @chGreen.addBridge('green', 1, 5)
+    @chGreen.addBridge('red', 5, 7)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 3, 9)
+    @chGreen.addBridge('red', 7, 3)
+    @chGreen.addBridge('green', 3, 15)
+    @chGreen.addBridge('red', 2, 6)
+    expect(@chGreen.winner()).toEqual('none')
+    @chGreen.addBridge('green', 1, 7)
+    @chGreen.addBridge('red', 15, 11)
+    @chGreen.addBridge('green', 2, 8)
+    expect(@chGreen.winner()).toEqual('green')
+
+
+    # Red wins
+    @chRed = new ConnectionHelper(@boardHelper)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 8, 6)
+    @chRed.addBridge('red', 11, 11)
+    @chRed.addBridge('green', 3, 13)
+    @chRed.addBridge('red', 4, 14)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 4, 6)
+    @chRed.addBridge('red', 9, 13)
+    @chRed.addBridge('green', 5, 7)
+    @chRed.addBridge('red', 13, 11)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 10, 6)
+    @chRed.addBridge('red', 8, 12)
+    @chRed.addBridge('green', 3, 11)
+    @chRed.addBridge('red', 5, 3)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 8, 8)
+    @chRed.addBridge('red', 10, 12)
+    @chRed.addBridge('green', 7, 7)
+    @chRed.addBridge('red', 7, 13)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 6, 8)
+    @chRed.addBridge('red', 3, 15)
+    @chRed.addBridge('green', 3, 3)
+    @chRed.addBridge('red', 1, 15)
+    expect(@chRed.winner()).toEqual('none')
+    @chRed.addBridge('green', 3, 1)
+    @chRed.addBridge('red', 15, 11)
+    @chRed.addBridge('green', 7, 5)
+    @chRed.addBridge('red', 5, 13)
+    expect(@chRed.winner()).toEqual('red')
