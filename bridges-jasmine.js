@@ -12,24 +12,32 @@ BridgesApp = (function() {
     this.points = new PointsList;
     this.bridgeDraw = new BridgeDraw(this.context, this.boardHelper);
     this.redAI = new AiPlayer('red', this.points);
-    this.playerToMove = 'green';
+    this.gameStatus = 'yourMove';
   }
 
   BridgesApp.prototype.handleClick = function(xx, yy) {
     var ab, redMove;
-    if (this.playerToMove === 'green') {
+    if (this.gameStatus === 'yourMove') {
       console.log("BridgesApp.handleClick(" + xx + ", " + yy + ")");
       ab = this.boardHelper.getAB(xx, yy);
       if (ab[0] >= 0) {
-        if (this.legalMove(this.playerToMove, ab[0], ab[1])) {
+        if (this.legalMove('green', ab[0], ab[1])) {
           console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
-          this.bridgeDraw.drawBridge(this.playerToMove, ab[0], ab[1]);
+          this.bridgeDraw.drawBridge('green', ab[0], ab[1]);
           this.makeMove('green', ab[0], ab[1]);
-          this.playerToMove = 'red';
-          redMove = this.redAI.chooseMove();
-          this.bridgeDraw.drawBridge('red', redMove[0], redMove[1]);
-          this.makeMove('red', redMove[0], redMove[1]);
-          return this.playerToMove = 'green';
+          if (this.connectHelper.winner() === 'green') {
+            return this.gameStatus = 'youWin';
+          } else {
+            this.gameStatus = 'waitingForAi';
+            redMove = this.redAI.chooseMove();
+            this.bridgeDraw.drawBridge('red', redMove[0], redMove[1]);
+            this.makeMove('red', redMove[0], redMove[1]);
+            if (this.connectHelper.winner() === 'red') {
+              return this.gameStatus = 'youLose';
+            } else {
+              return this.gameStatus = 'yourMove';
+            }
+          }
         }
       }
     }

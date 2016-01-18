@@ -36,23 +36,29 @@ class BridgesApp
     @points = new PointsList
     @bridgeDraw = new BridgeDraw(@context, @boardHelper)
     @redAI = new AiPlayer('red', @points)
-    @playerToMove = 'green'
+    @gameStatus = 'yourMove'
 
 
   handleClick: (xx,yy) ->
-    if @playerToMove == 'green'
+    if @gameStatus == 'yourMove'
       console.log "BridgesApp.handleClick(#{xx}, #{yy})"
       ab = @boardHelper.getAB(xx,yy)
       if ab[0] >= 0
-        if @legalMove(@playerToMove, ab[0], ab[1])
+        if @legalMove('green', ab[0], ab[1])
           console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
-          @bridgeDraw.drawBridge(@playerToMove, ab[0], ab[1])
+          @bridgeDraw.drawBridge('green', ab[0], ab[1])
           @makeMove('green', ab[0], ab[1])
-          @playerToMove = 'red'
-          redMove = @redAI.chooseMove()
-          @bridgeDraw.drawBridge('red', redMove[0], redMove[1])
-          @makeMove('red', redMove[0], redMove[1])
-          @playerToMove = 'green'
+          if @connectHelper.winner() == 'green'
+            @gameStatus = 'youWin'
+          else
+            @gameStatus = 'waitingForAi'
+            redMove = @redAI.chooseMove()
+            @bridgeDraw.drawBridge('red', redMove[0], redMove[1])
+            @makeMove('red', redMove[0], redMove[1])
+            if @connectHelper.winner() == 'red'
+              @gameStatus = 'youLose'
+            else
+              @gameStatus = 'yourMove'
 
 
   makeMove: (color, a, b) ->
