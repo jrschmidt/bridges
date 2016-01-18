@@ -32,9 +32,9 @@ class BridgesApp
     @context.drawImage(base,0,0)
 
     @boardHelper = new BoardGeometryHelper
+    @connectHelper = new ConnectionHelper(@boardHelper)
     @points = new PointsList
     @bridgeDraw = new BridgeDraw(@context, @boardHelper)
-    @status = new GameStatus(@boardHelper, @points)
     @redAI = new AiPlayer('red', @points)
     @playerToMove = 'green'
 
@@ -44,30 +44,26 @@ class BridgesApp
       console.log "BridgesApp.handleClick(#{xx}, #{yy})"
       ab = @boardHelper.getAB(xx,yy)
       if ab[0] >= 0
-        if @status.legalMove(@playerToMove, ab[0], ab[1])
+        if @legalMove(@playerToMove, ab[0], ab[1])
           console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
-          @status.makeMove(@playerToMove, ab[0], ab[1])
           @bridgeDraw.drawBridge(@playerToMove, ab[0], ab[1])
+          @makeMove('green', ab[0], ab[1])
           @playerToMove = 'red'
-          redMove = @redAI.move()
-          @bridgeDraw.drawBridge(@playerToMove, redMove[0], redMove[1])
+          redMove = @redAI.chooseMove()
+          @bridgeDraw.drawBridge('red', redMove[0], redMove[1])
+          @makeMove('red', redMove[0], redMove[1])
           @playerToMove = 'green'
-
-
-
-class GameStatus
-
-  constructor: (helper, points) ->
-    @helper = helper
-    @points = points
-    @connect = new ConnectionHelper(@helper)
-
-    @mode = 'active'
 
 
   makeMove: (color, a, b) ->
     console.log("makeMove(#{color}, #{a}, #{b})")
     @points.remove(a, b)
+    @connectHelper.addBridge(color, a, b)
+    win = @connectHelper.winner()
+    if win == 'green'
+      alert('YOU WIN !!!')
+    if win == 'red'
+      alert('You lose (computer wins).')
 
 
   legalMove: (color, a, b) ->
@@ -85,7 +81,7 @@ class AiPlayer
     @points = points
 
 
-  move: ->
+  chooseMove: ->
     return @points.randomPoint()
 
 
@@ -167,33 +163,35 @@ class ConnectionHelper
 
 
   addBridge: (color, a, b) ->
+    console.log("call ConnectionHelper.addBridge( #{color}, #{a}, #{b})")
     ends = @findEndpoints(color, a, b)
-    connect = @findConnectingChains(color, ends)
-    switch connect.length
+    cxChains = @findConnectingChains(color, ends)
+    switch cxChains.length
       when 0 #new chain
         @chains[color].push([ends[0], ends[1]])
       when 1 #add to existing chain
-        ch = @chains[color][connect[0]]
+        ch = @chains[color][cxChains[0]]
         ch.push(ends[0]) if ch.indexOf(ends[0]) < 0
         ch.push(ends[1]) if ch.indexOf(ends[1]) < 0
       when 2 #new bridge links two chains together
         chx = []
-        i1 = connect[0]
-        i2 = connect[1]
+        i1 = cxChains[0]
+        i2 = cxChains[1]
         for i in [0 .. @chains[color].length - 1]
           chx.push(@chains[color][i]) if not (i == i1 or i == i2)
         chx.push(@chains[color][i1].concat(@chains[color][i2]))
         @chains[color] = chx
+    console.log("chains:#{color}  length = #{@chains[color].length}")
 
 
 
   findConnectingChains: (color, ends) ->
-    connect = []
+    conxChains = []
     if @chains[color].length > 0
       for i in [0 .. @chains[color].length - 1]
-        connect.push(i) if @chains[color][i].indexOf(ends[0]) >= 0
-        connect.push(i) if @chains[color][i].indexOf(ends[1]) >= 0
-    return connect
+        conxChains.push(i) if @chains[color][i].indexOf(ends[0]) >= 0
+        conxChains.push(i) if @chains[color][i].indexOf(ends[1]) >= 0
+    return conxChains
 
 
   findEndpoints: (color, a, b) ->
