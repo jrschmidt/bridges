@@ -32,31 +32,34 @@ class BridgesApp
     @context.drawImage(base,0,0)
 
     @boardHelper = new BoardGeometryHelper
+    @points = new PointsList
     @bridgeDraw = new BridgeDraw(@context, @boardHelper)
-    @status = new GameStatus(@boardHelper)
-    @temp = 'green'
+    @status = new GameStatus(@boardHelper, @points)
+    @redAI = new AiPlayer('red', @points)
+    @playerToMove = 'green'
 
 
   handleClick: (xx,yy) ->
-    console.log "BridgesApp.handleClick(#{xx}, #{yy})"
-    ab = @boardHelper.getAB(xx,yy)
-    if ab[0] >= 0
-      if @status.legalMove(@temp, ab[0], ab[1])
-        console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
-        @status.makeMove(@temp, ab[0], ab[1])
-        @bridgeDraw.drawBridge(@temp, ab[0], ab[1])
-        if @temp == 'green'
-          @temp = 'red'
-        else
-          @temp = 'green'
+    if @playerToMove == 'green'
+      console.log "BridgesApp.handleClick(#{xx}, #{yy})"
+      ab = @boardHelper.getAB(xx,yy)
+      if ab[0] >= 0
+        if @status.legalMove(@playerToMove, ab[0], ab[1])
+          console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
+          @status.makeMove(@playerToMove, ab[0], ab[1])
+          @bridgeDraw.drawBridge(@playerToMove, ab[0], ab[1])
+          @playerToMove = 'red'
+          redMove = @redAI.move()
+          @bridgeDraw.drawBridge(@playerToMove, redMove[0], redMove[1])
+          @playerToMove = 'green'
 
 
 
 class GameStatus
 
-  constructor: (helper) ->
+  constructor: (helper, points) ->
     @helper = helper
-    @points = new PointsList
+    @points = points
     @connect = new ConnectionHelper(@helper)
 
     @mode = 'active'
@@ -72,6 +75,18 @@ class GameStatus
       return true
     else
       return false
+
+
+
+class AiPlayer
+
+  constructor: (color, points) ->
+    @color = color
+    @points = points
+
+
+  move: ->
+    return @points.randomPoint()
 
 
 
@@ -113,17 +128,30 @@ class PointsList
 
   listContains: (a, b) ->
 
-    if @flatlist.indexOf(100*a + b) < 0
+    if @flatlist.indexOf(a*100 + b) < 0
       return false
     else
       return true
 
 
+  randomPoint: ->
+    i = Math.floor(Math.random() * (@list.length - 1))
+    console.log("i = #{i}")
+    ab = @list[i]
+    console.log("ab = [#{ab[0]},#{ab[1]}]")
+    @iRemove(i)
+    return ab
+
+
   remove: (a, b) ->
     i = @flatlist.indexOf(100*a + b)
-    if i >= 0
-      @list = @list[0 .. (i-1)].concat(@list[(i+1) ..])
-      @flatlist = @flatlist[0 .. (i-1)].concat(@flatlist[(i+1) ..])
+    @iRemove(i) if i >= 0
+
+
+  iRemove: (i) ->
+    console.log "iRemove  i = #{i}"
+    @list = @list.slice(0, i).concat(@list.slice(i + 1))
+    @flatlist = @flatlist.slice(0, i).concat(@flatlist.slice(i + 1))
 
 
 
