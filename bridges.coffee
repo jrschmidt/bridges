@@ -130,11 +130,20 @@ class PointsList
       return true
 
 
+  # randomPoint: ->
+  #   i = Math.floor(Math.random() * (@list.length - 1))
+  #   ab = @list[i]
+  #   @iRemove(i)
+  #   return ab
+
+
   randomPoint: ->
-    i = Math.floor(Math.random() * (@list.length - 1))
-    ab = @list[i]
+    i = Math.floor(Math.random() * (@flatlist.length - 1))
+    ab = @flatlist[i]
     @iRemove(i)
-    return ab
+    b = ab % 100
+    a = (ab - b) / 100
+    return [a, b]
 
 
   remove: (a, b) ->

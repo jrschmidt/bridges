@@ -131,11 +131,13 @@ PointsList = (function() {
   };
 
   PointsList.prototype.randomPoint = function() {
-    var ab, i;
-    i = Math.floor(Math.random() * (this.list.length - 1));
-    ab = this.list[i];
+    var a, ab, b, i;
+    i = Math.floor(Math.random() * (this.flatlist.length - 1));
+    ab = this.flatlist[i];
     this.iRemove(i);
-    return ab;
+    b = ab % 100;
+    a = (ab - b) / 100;
+    return [a, b];
   };
 
   PointsList.prototype.remove = function(a, b) {
