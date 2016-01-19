@@ -106,24 +106,21 @@ PointsList = (function() {
   function PointsList() {
     var a, b, j, k, l;
     this.list = [];
-    this.flatlist = [];
     for (b = j = 1; j <= 15; b = ++j) {
       if (b % 2 === 1) {
         for (a = k = 1; k <= 15; a = k += 2) {
-          this.list.push([a, b]);
-          this.flatlist.push(a * 100 + b);
+          this.list.push(a * 100 + b);
         }
       } else {
         for (a = l = 2; l <= 14; a = l += 2) {
-          this.list.push([a, b]);
-          this.flatlist.push(a * 100 + b);
+          this.list.push(a * 100 + b);
         }
       }
     }
   }
 
   PointsList.prototype.listContains = function(a, b) {
-    if (this.flatlist.indexOf(a * 100 + b) < 0) {
+    if (this.list.indexOf(a * 100 + b) < 0) {
       return false;
     } else {
       return true;
@@ -132,8 +129,8 @@ PointsList = (function() {
 
   PointsList.prototype.randomPoint = function() {
     var a, ab, b, i;
-    i = Math.floor(Math.random() * (this.flatlist.length - 1));
-    ab = this.flatlist[i];
+    i = Math.floor(Math.random() * (this.list.length - 1));
+    ab = this.list[i];
     this.iRemove(i);
     b = ab % 100;
     a = (ab - b) / 100;
@@ -142,15 +139,14 @@ PointsList = (function() {
 
   PointsList.prototype.remove = function(a, b) {
     var i;
-    i = this.flatlist.indexOf(100 * a + b);
+    i = this.list.indexOf(100 * a + b);
     if (i >= 0) {
       return this.iRemove(i);
     }
   };
 
   PointsList.prototype.iRemove = function(i) {
-    this.list = this.list.slice(0, i).concat(this.list.slice(i + 1));
-    return this.flatlist = this.flatlist.slice(0, i).concat(this.flatlist.slice(i + 1));
+    return this.list = this.list.slice(0, i).concat(this.list.slice(i + 1));
   };
 
   return PointsList;

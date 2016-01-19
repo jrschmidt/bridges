@@ -5,38 +5,32 @@ describe "Points status object", ->
     list = @points.list
 
     expect(list.length).toEqual(113)
-    expect(list).toContain([1,1])
-    expect(list).toContain([15,1])
-    expect(list).toContain([1,15])
-    expect(list).toContain([15,15])
-    expect(list).toContain([6,12])
-    expect(list).toContain([4,14])
-    expect(list).toContain([11,3])
-    expect(list).toContain([8,10])
-    expect(list).toContain([5,13])
-    expect(list).toContain([9,7])
+    expect(list.indexOf(101)).toBeGreaterThan(-1)
+    expect(list.indexOf(1501)).toBeGreaterThan(-1)
+    expect(list.indexOf(115)).toBeGreaterThan(-1)
+    expect(list.indexOf(1515)).toBeGreaterThan(-1)
+    expect(list.indexOf(612)).toBeGreaterThan(-1)
+    expect(list.indexOf(414)).toBeGreaterThan(-1)
+    expect(list.indexOf(1103)).toBeGreaterThan(-1)
+    expect(list.indexOf(810)).toBeGreaterThan(-1)
+    expect(list.indexOf(513)).toBeGreaterThan(-1)
+    expect(list.indexOf(907)).toBeGreaterThan(-1)
 
 
   it "should remove an item from an array", ->
 
     @points = new PointsList
     expect(@points.list.length).toEqual(113)
-    expect(@points.flatlist.length).toEqual(113)
     @points.remove(18,32)
-    expect(@points.flatlist.length).toEqual(113)
     expect(@points.list.length).toEqual(113)
     @points.remove(4,10)
     expect(@points.list.length).toEqual(112)
-    expect(@points.flatlist.length).toEqual(112)
     @points.remove(13,7)
     expect(@points.list.length).toEqual(111)
-    expect(@points.flatlist.length).toEqual(111)
     @points.remove(12,8)
     expect(@points.list.length).toEqual(110)
-    expect(@points.flatlist.length).toEqual(110)
     @points.remove(5,3)
     expect(@points.list.length).toEqual(109)
-    expect(@points.flatlist.length).toEqual(109)
 
 
   it "should determine if an item is in the list", ->
