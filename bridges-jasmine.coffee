@@ -6,7 +6,6 @@
 #   base = new Image()
 #   base.onload = =>
 #     @bridges = new BridgesApp(base)
-#     console.log('base.png Image.onload() called')
 #   base.src = 'base.png'
 #
 #
@@ -18,7 +17,6 @@
 #   py = e.pageY
 #   x = px-dx
 #   y = py-dy
-#   console.log "[@mousedown] click at #{x}, #{y}"
 #   @bridges.handleClick(x,y)
 
 
@@ -26,7 +24,6 @@
 class BridgesApp
 
   constructor: (base) ->
-    console.log('BridgesApp constructor called')
     @canvas = document.getElementById("bridges-canvas")
     @context = @canvas.getContext("2d")
     @context.drawImage(base,0,0)
@@ -41,11 +38,9 @@ class BridgesApp
 
   handleClick: (xx,yy) ->
     if @gameStatus == 'yourMove'
-      console.log "BridgesApp.handleClick(#{xx}, #{yy})"
       ab = @boardHelper.getAB(xx,yy)
       if ab[0] >= 0
         if @legalMove('green', ab[0], ab[1])
-          console.log "(#{xx}, #{yy}) --> (#{ab[0]}, #{ab[1]})"
           @bridgeDraw.drawBridge('green', ab[0], ab[1])
           @makeMove('green', ab[0], ab[1])
           if @connectHelper.winner() == 'green'
@@ -62,7 +57,6 @@ class BridgesApp
 
 
   makeMove: (color, a, b) ->
-    console.log("makeMove(#{color}, #{a}, #{b})")
     @points.remove(a, b)
     @connectHelper.addBridge(color, a, b)
     win = @connectHelper.winner()
@@ -138,9 +132,7 @@ class PointsList
 
   randomPoint: ->
     i = Math.floor(Math.random() * (@list.length - 1))
-    console.log("i = #{i}")
     ab = @list[i]
-    console.log("ab = [#{ab[0]},#{ab[1]}]")
     @iRemove(i)
     return ab
 
@@ -151,7 +143,6 @@ class PointsList
 
 
   iRemove: (i) ->
-    console.log "iRemove  i = #{i}"
     @list = @list.slice(0, i).concat(@list.slice(i + 1))
     @flatlist = @flatlist.slice(0, i).concat(@flatlist.slice(i + 1))
 
@@ -169,7 +160,6 @@ class ConnectionHelper
 
 
   addBridge: (color, a, b) ->
-    console.log("call ConnectionHelper.addBridge( #{color}, #{a}, #{b})")
     ends = @findEndpoints(color, a, b)
     cxChains = @findConnectingChains(color, ends)
     switch cxChains.length
@@ -187,7 +177,6 @@ class ConnectionHelper
           chx.push(@chains[color][i]) if not (i == i1 or i == i2)
         chx.push(@chains[color][i1].concat(@chains[color][i2]))
         @chains[color] = chx
-    console.log("chains:#{color}  length = #{@chains[color].length}")
 
 
 
@@ -248,7 +237,6 @@ class BridgeDraw
 
 
   drawBridge: (color, a, b) ->
-    console.log("call BridegDraw.drawBridge( #{color}, #{a}, #{b})")
     colorcode = @bcolors[color]
     xxyy = @helper.getXY(a, b)
     xx = xxyy[0]
@@ -276,19 +264,6 @@ class BridgeDraw
     @context.fillRect(x1,y1,wd1,ht1)
     @context.fillStyle = colorcode
     @context.fillRect(x2,y2,wd2,ht2)
-
-
-
-# Draw a yellow dot for test purposes.
-  yellowdot: (a,b) ->
-    console.log("yellowdot(#{a}, #{b})")
-    xy = @helper.getXY(a,b)
-    @context.fillStyle = "#ffff00"
-    @context.beginPath()
-    @context.arc(xy[0] + 0.5,xy[1] + 0.5,10,0,2*Math.PI,false)
-    @context.fill()
-    @context.stroke()
-    @context.closePath()
 
 
 

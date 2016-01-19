@@ -3,7 +3,6 @@ var AiPlayer, BoardGeometryHelper, BridgeDraw, BridgesApp, ConnectionHelper, Poi
 
 BridgesApp = (function() {
   function BridgesApp(base) {
-    console.log('BridgesApp constructor called');
     this.canvas = document.getElementById("bridges-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.drawImage(base, 0, 0);
@@ -18,11 +17,9 @@ BridgesApp = (function() {
   BridgesApp.prototype.handleClick = function(xx, yy) {
     var ab, redMove;
     if (this.gameStatus === 'yourMove') {
-      console.log("BridgesApp.handleClick(" + xx + ", " + yy + ")");
       ab = this.boardHelper.getAB(xx, yy);
       if (ab[0] >= 0) {
         if (this.legalMove('green', ab[0], ab[1])) {
-          console.log("(" + xx + ", " + yy + ") --> (" + ab[0] + ", " + ab[1] + ")");
           this.bridgeDraw.drawBridge('green', ab[0], ab[1]);
           this.makeMove('green', ab[0], ab[1]);
           if (this.connectHelper.winner() === 'green') {
@@ -45,7 +42,6 @@ BridgesApp = (function() {
 
   BridgesApp.prototype.makeMove = function(color, a, b) {
     var win;
-    console.log("makeMove(" + color + ", " + a + ", " + b + ")");
     this.points.remove(a, b);
     this.connectHelper.addBridge(color, a, b);
     win = this.connectHelper.winner();
@@ -114,9 +110,7 @@ PointsList = (function() {
   PointsList.prototype.randomPoint = function() {
     var ab, i;
     i = Math.floor(Math.random() * (this.list.length - 1));
-    console.log("i = " + i);
     ab = this.list[i];
-    console.log("ab = [" + ab[0] + "," + ab[1] + "]");
     this.iRemove(i);
     return ab;
   };
@@ -130,7 +124,6 @@ PointsList = (function() {
   };
 
   PointsList.prototype.iRemove = function(i) {
-    console.log("iRemove  i = " + i);
     this.list = this.list.slice(0, i).concat(this.list.slice(i + 1));
     return this.flatlist = this.flatlist.slice(0, i).concat(this.flatlist.slice(i + 1));
   };
@@ -150,20 +143,18 @@ ConnectionHelper = (function() {
 
   ConnectionHelper.prototype.addBridge = function(color, a, b) {
     var ch, chx, cxChains, ends, i, i1, i2, j, ref;
-    console.log("call ConnectionHelper.addBridge( " + color + ", " + a + ", " + b + ")");
     ends = this.findEndpoints(color, a, b);
     cxChains = this.findConnectingChains(color, ends);
     switch (cxChains.length) {
       case 0:
-        this.chains[color].push([ends[0], ends[1]]);
-        break;
+        return this.chains[color].push([ends[0], ends[1]]);
       case 1:
         ch = this.chains[color][cxChains[0]];
         if (ch.indexOf(ends[0]) < 0) {
           ch.push(ends[0]);
         }
         if (ch.indexOf(ends[1]) < 0) {
-          ch.push(ends[1]);
+          return ch.push(ends[1]);
         }
         break;
       case 2:
@@ -176,9 +167,8 @@ ConnectionHelper = (function() {
           }
         }
         chx.push(this.chains[color][i1].concat(this.chains[color][i2]));
-        this.chains[color] = chx;
+        return this.chains[color] = chx;
     }
-    return console.log("chains:" + color + "  length = " + this.chains[color].length);
   };
 
   ConnectionHelper.prototype.findConnectingChains = function(color, ends) {
@@ -262,7 +252,6 @@ BridgeDraw = (function() {
 
   BridgeDraw.prototype.drawBridge = function(color, a, b) {
     var colorcode, ht1, ht2, vh, wd1, wd2, x1, x2, xx, xxyy, y1, y2, yy;
-    console.log("call BridegDraw.drawBridge( " + color + ", " + a + ", " + b + ")");
     colorcode = this.bcolors[color];
     xxyy = this.helper.getXY(a, b);
     xx = xxyy[0];
@@ -291,18 +280,6 @@ BridgeDraw = (function() {
     this.context.fillRect(x1, y1, wd1, ht1);
     this.context.fillStyle = colorcode;
     return this.context.fillRect(x2, y2, wd2, ht2);
-  };
-
-  BridgeDraw.prototype.yellowdot = function(a, b) {
-    var xy;
-    console.log("yellowdot(" + a + ", " + b + ")");
-    xy = this.helper.getXY(a, b);
-    this.context.fillStyle = "#ffff00";
-    this.context.beginPath();
-    this.context.arc(xy[0] + 0.5, xy[1] + 0.5, 10, 0, 2 * Math.PI, false);
-    this.context.fill();
-    this.context.stroke();
-    return this.context.closePath();
   };
 
   return BridgeDraw;
